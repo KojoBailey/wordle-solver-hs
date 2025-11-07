@@ -42,17 +42,30 @@ wordle_solve :: [String] -> IO ()
 wordle_solve [] = print "No solution found..."
 wordle_solve [_] = print "Solution reached!"
 wordle_solve remaining_words = do
-  print "Enter word:"
+  putStrLn "Enter word:"
   word_input <- getLine
-  print "Enter correctness ('=' : correct, '/' : wrong position, 'X' : not used)"
+  putStrLn "Enter correctness ('=' : correct, '/' : wrong position, 'X' : not used)"
   correctness_input <- getLine
   let possibilities = generate_possibilities (zip word_input $ convert_correctness_string correctness_input) remaining_words
   putStrLn $ "Number of possibilties: " ++ (show . length) possibilities
   print possibilities
   wordle_solve possibilities
 
+calculate_letter_frequency_word :: [(Char, Int)] -> String -> [(Char, Int)]
+calculate_letter_frequency_word result [] = result
+calculate_letter_frequency_word previous (c:string) = calculate_letter_frequency_word foo string
+  where foo = map (\ (char, freq) -> if char == c then (char, succ freq) else (char, freq)) previous
+
+calculate_letter_frequency :: [(Char, Int)] -> [String] -> [(Char, Int)]
+calculate_letter_frequency result [] = result
+calculate_letter_frequency previous words =
+  calculate_letter_frequency (calculate_letter_frequency_word previous (head words)) $ tail words
 
 main :: IO ()
 main = do
+  putStrLn "Reading file of valid Worlde words..."
   contents <- readFile "valid-wordle-words.txt"
+  putStrLn "Calculating letter frequencies..."
+  print $ calculate_letter_frequency (map (\ c -> (c, 0)) ['a'..'z']) (lines contents)
+  putStrLn "Ready to begin!"
   wordle_solve $ lines contents
