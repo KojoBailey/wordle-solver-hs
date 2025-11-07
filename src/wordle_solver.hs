@@ -38,10 +38,10 @@ convert_correct_char  _  = NotUsed
 convert_correctness_string :: String -> [WordleCorrectness]
 convert_correctness_string = map convert_correct_char
 
-iterate_foo :: [String] -> IO ()
-iterate_foo [] = print "No solution found..."
-iterate_foo [_] = print "Solution reached!"
-iterate_foo remaining_words = do
+wordle_solve :: [String] -> IO ()
+wordle_solve [] = print "No solution found..."
+wordle_solve [_] = print "Solution reached!"
+wordle_solve remaining_words = do
   print "Enter word:"
   word_input <- getLine
   print "Enter correctness (V = correct, P = wrong position, X = not used)"
@@ -49,11 +49,11 @@ iterate_foo remaining_words = do
   let possibilities = generate_possibilities (zip word_input $ convert_correctness_string correctness_input) remaining_words
   putStrLn $ "Number of possibilties: " ++ (show . length) possibilities ++ "/14855"
   print possibilities
-  iterate_foo possibilities
+  wordle_solve possibilities
 
 
 main :: IO ()
 main = do
   contents <- readFile "valid-wordle-words.txt"
   let words = lines contents
-  iterate_foo words
+  wordle_solve words
