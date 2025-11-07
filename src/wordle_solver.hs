@@ -30,8 +30,8 @@ generate_possibilities :: WordleString -> [String] -> [String]
 generate_possibilities input = filter (is_possible input)
 
 convert_correct_char :: Char -> WordleCorrectness
-convert_correct_char 'V' = CorrectPosition
-convert_correct_char 'P' = WrongPosition
+convert_correct_char '=' = CorrectPosition
+convert_correct_char '/' = WrongPosition
 convert_correct_char 'X' = NotUsed
 convert_correct_char  _  = NotUsed
 
@@ -44,10 +44,10 @@ wordle_solve [_] = print "Solution reached!"
 wordle_solve remaining_words = do
   print "Enter word:"
   word_input <- getLine
-  print "Enter correctness (V = correct, P = wrong position, X = not used)"
+  print "Enter correctness ('=' : correct, '/' : wrong position, 'X' : not used)"
   correctness_input <- getLine
   let possibilities = generate_possibilities (zip word_input $ convert_correctness_string correctness_input) remaining_words
-  putStrLn $ "Number of possibilties: " ++ (show . length) possibilities ++ "/14855"
+  putStrLn $ "Number of possibilties: " ++ (show . length) possibilities
   print possibilities
   wordle_solve possibilities
 
