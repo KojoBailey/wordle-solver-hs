@@ -55,5 +55,4 @@ wordle_solve remaining_words = do
 main :: IO ()
 main = do
   contents <- readFile "valid-wordle-words.txt"
-  let words = lines contents
-  wordle_solve words
+  wordle_solve $ lines contents
