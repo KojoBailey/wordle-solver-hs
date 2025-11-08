@@ -69,6 +69,7 @@ wordle_solve remaining_words turn = do
   else
     print possibilities
 
+  putStrLn []
   wordle_solve possibilities (succ turn)
 
 
