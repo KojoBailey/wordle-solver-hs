@@ -36,6 +36,8 @@ main = do
   putStrLn "Calculating likelihood score for each word..."
   let unsorted_result = calculate_likelihood words positional_letter_frequencies
   let result = sortOn (Down . snd) unsorted_result
+  putStrLn "Best starting words are:"
+  print $ take 5 result
 
   let output_filename = "wordle-stats.txt"
   putStrLn $ "Writing data to " ++ output_filename ++ "..."
