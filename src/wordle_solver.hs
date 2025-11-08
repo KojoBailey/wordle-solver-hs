@@ -17,13 +17,16 @@ match input target = zip input $ zipWith (curry (`match2` target)) input target
 -- Infer if word is possible based on WordleString input.
   -- If word contains letter from input that is NotUsed, remove from list.
   -- If letter in WrongPosition is not in word, remove from list.
+  -- If letter in WrongPosition is in same position in word, remove from list.
   -- If letter from input that is CorrectPosition is not in same position as word, remove from list.
 is_possible :: WordleString -> String -> Bool
 is_possible input word
   | any (\ (char, correctness) -> correctness == NotUsed && char `elem` word) input = False
   | any (\ (char, corr) -> corr == WrongPosition && char `notElem` word) input = False
-  | any (\ ((char1, corr1), char2) -> corr1 == CorrectPosition && char1 /= char2) (zip input word) = False
+  | any (\ ((char1, correctness), char2) -> correctness == WrongPosition && char1 == char2) zipped = False
+  | any (\ ((char1, correctness), char2) -> correctness == CorrectPosition && char1 /= char2) zipped = False
   | otherwise = True
+  where zipped = zip input word
 
 -- Take WordleString from input and find possibilities.
 generate_possibilities :: WordleString -> [String] -> [String]
