@@ -49,7 +49,7 @@ convert_correctness_string = map convert_correct_char
 wordle_solve :: [String] -> Integer -> IO ()
 wordle_solve [ ] _  = print "No solution found..."
 wordle_solve [_] _  = print "Solution reached!"
-wordle_solve _ (-1) = print "Out of turns!"
+wordle_solve _ (0) = print "Out of turns!"
 wordle_solve remaining_words turns_left = do
   putStrLn "Enter word:"
   word_input <- getLine
