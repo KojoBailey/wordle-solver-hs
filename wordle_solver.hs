@@ -83,7 +83,6 @@ wordle_solve remaining_words turn = do
 
 main :: IO ()
 main = do
-  wordle_words <- readFile "valid-wordle-words.txt"
   wordle_stats <- readFile "wordle-stats.txt"
 
   let word_likelihoods = read wordle_stats :: [(String, Integer)]
