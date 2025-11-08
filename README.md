@@ -12,7 +12,7 @@ This repo comes with 2 Haskell (`.hs`) scripts: [`wordle_solver`](https://github
 
 Note that `wordle_solver.hs` won't actually do everything for you. It is only a guide offering advice based on predictions. Therefore, you need to enter your words into Wordle and check with the program turn-by-turn until you (hopefully) reach the solution before running out of turns.
 
-## Example
+## Examples
 The following are example terminal outputs after completing a Wordle puzzle.
 
 ### Example 1 - `arise`
@@ -72,3 +72,6 @@ Number of possibilties: 1
 
 Solution reached in 3 turs!
 ```
+
+## Known issues
+I still need to add detection for when you input a word with duplicate letters but the target does not have all of them - for example, you input "deeps" but the answer is "slept". Wordle will show this as "XX==/", but inputting this into the program will make it think that "e" is not in the word at all, even though it is but with only one instance. Until this is fixed, you'd need to change your input to "X/==/", which isn't perfect, but it keeps it working at least.
