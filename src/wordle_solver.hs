@@ -46,11 +46,13 @@ convert_correct_char  _  = NotUsed
 convert_correctness_string :: String -> [WordleCorrectness]
 convert_correctness_string = map convert_correct_char
 
+print_solution_reached :: Integer -> IO ()
+print_solution_reached turn = do putStrLn []; putStrLn $ "Solution reached in " ++ show turn ++ " turns!"
 
 wordle_solve :: [String] -> Integer -> IO ()
-wordle_solve [ ] _  = putStrLn "No solution found..."
-wordle_solve [_] _  = putStrLn "Solution reached!"
-wordle_solve _ (6)  = putStrLn "Out of turns!"
+wordle_solve [ ] _    = putStrLn "No solution found..."
+wordle_solve _ (6)    = putStrLn "Out of turns!"
+wordle_solve [_] turn = print_solution_reached turn
 wordle_solve remaining_words turn = do
   putStrLn $ "~~ TURN " ++ show turn ++ " ~~"
   putStrLn "Enter word:"
@@ -60,17 +62,21 @@ wordle_solve remaining_words turn = do
   putStrLn "Enter correctness ('=' : correct, '/' : wrong position, 'X' : not used)"
   correctness_input <- getLine
 
-  let possibilities = generate_possibilities (zip word_input $ convert_correctness_string correctness_input) remaining_words
-  let filtered_possibilities = filter (\str -> length str == length (nub str)) possibilities
-  putStrLn $ "Number of possibilties: " ++ (show . length) possibilities
-  if length filtered_possibilities > 5 then do
-    putStrLn "(Words with duplicate letters are hidden.)"
-    print filtered_possibilities
-  else
-    print possibilities
+  if correctness_input == "=====" then do
+    print_solution_reached turn
+    return ()
+  else do
+    let possibilities = generate_possibilities (zip word_input $ convert_correctness_string correctness_input) remaining_words
+    let filtered_possibilities = filter (\str -> length str == length (nub str)) possibilities
+    putStrLn $ "Number of possibilties: " ++ (show . length) possibilities
+    if length filtered_possibilities > 5 then do
+      putStrLn "(Words with duplicate letters are hidden.)"
+      print filtered_possibilities
+    else
+      print possibilities
 
-  putStrLn []
-  wordle_solve possibilities (succ turn)
+    putStrLn []
+    wordle_solve possibilities (succ turn)
 
 
 main :: IO ()
