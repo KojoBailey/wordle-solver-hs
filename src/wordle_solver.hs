@@ -1,9 +1,12 @@
 import System.IO
+import Data.Ord
+import Data.List
 
 data WordleCorrectness = NotUsed | WrongPosition | CorrectPosition
   deriving (Eq, Show, Read, Ord)
 
 type WordleString = [(Char, WordleCorrectness)]
+
 
 match2 :: (Eq b, Foldable t) => (b, b) -> t b -> WordleCorrectness
 match2 chars target
@@ -13,6 +16,7 @@ match2 chars target
 
 match :: String -> String -> WordleString
 match input target = zip input $ zipWith (curry (`match2` target)) input target
+
 
 -- Infer if word is possible based on WordleString input.
   -- If word contains letter from input that is NotUsed, remove from list.
@@ -32,6 +36,7 @@ is_possible input word
 generate_possibilities :: WordleString -> [String] -> [String]
 generate_possibilities input = filter (is_possible input)
 
+
 convert_correct_char :: Char -> WordleCorrectness
 convert_correct_char '=' = CorrectPosition
 convert_correct_char '/' = WrongPosition
@@ -41,20 +46,31 @@ convert_correct_char  _  = NotUsed
 convert_correctness_string :: String -> [WordleCorrectness]
 convert_correctness_string = map convert_correct_char
 
+
 wordle_solve :: [String] -> IO ()
-wordle_solve [] = print "No solution found..."
+wordle_solve [ ] = print "No solution found..."
 wordle_solve [_] = print "Solution reached!"
 wordle_solve remaining_words = do
   putStrLn "Enter word:"
   word_input <- getLine
+
   putStrLn "Enter correctness ('=' : correct, '/' : wrong position, 'X' : not used)"
   correctness_input <- getLine
+
   let possibilities = generate_possibilities (zip word_input $ convert_correctness_string correctness_input) remaining_words
   putStrLn $ "Number of possibilties: " ++ (show . length) possibilities
   print possibilities
+
   wordle_solve possibilities
+
 
 main :: IO ()
 main = do
-  contents <- readFile "valid-wordle-words.txt"
-  wordle_solve $ lines contents
+  wordle_words <- readFile "valid-wordle-words.txt"
+  wordle_stats <- readFile "wordle-stats.txt"
+
+  let word_likelihoods = read wordle_stats :: [(String, Integer)]
+  let sorted_words_likelihoods = sortOn (Down . snd) word_likelihoods
+  let sorted_words = map fst sorted_words_likelihoods
+
+  wordle_solve sorted_words
