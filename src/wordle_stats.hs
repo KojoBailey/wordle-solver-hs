@@ -2,29 +2,20 @@ import System.IO
 import Data.Char
 
 
-calculate_letter_frequency_word :: [(Char, Integer)] -> String -> [(Char, Integer)]
-calculate_letter_frequency_word result [] = result
-calculate_letter_frequency_word previous (c:string) =
-  calculate_letter_frequency_word [if char == c then (char, freq + 1) else (char, freq) | (char, freq) <- previous] string
-
-calculate_letter_frequency :: [(Char, Integer)] -> [String] -> [(Char, Integer)]
-calculate_letter_frequency result [] = result
-calculate_letter_frequency previous words =
-  calculate_letter_frequency (calculate_letter_frequency_word previous (head words)) $ tail words
-
-foobar :: [(Char, Integer)] -> [Char] -> [(Char, Integer)]
-foobar list cs =
+calculate_letter_frequency :: [(Char, Integer)] -> [Char] -> [(Char, Integer)]
+calculate_letter_frequency list cs =
   [(char, toInteger . length $ filter (== char) cs) | (char, count) <- list] 
 
 calculate_positional_letter_frequency :: [String] -> [[(Char, Integer)]]
-calculate_positional_letter_frequency ws =
-  map (const ('a', 1)) ws : calculate_positional_letter_frequency (map tail ws)
-
-char_to_int :: Char -> Int
-char_to_int c = ord c - ord 'a'
+calculate_positional_letter_frequency ws
+  | any null ws = []
+  | otherwise   = calculate_letter_frequency empty_list (map head ws) : calculate_positional_letter_frequency (map tail ws)
+  where empty_list = [(c, 0) | c <- ['a'..'z']]
 
 calculate_likelihood :: [String] -> [(Char, Integer)] -> [(String, Integer)]
 calculate_likelihood ws freqs = map (\ w -> (w, sum [map snd freqs !! char_to_int c | c <- w])) ws
+  where char_to_int c = ord c - ord 'a'
+
 
 main :: IO ()
 main = do
@@ -33,7 +24,7 @@ main = do
   let words = lines contents
 
   putStrLn "Calculating letter frequencies..."
-  print $ foobar [(c, 0) | c <- ['a'..'z']] "aaaaabbbbbbbbcccccccccdddeeeeeee"
+  print $ calculate_positional_letter_frequency words
   -- let letter_frequencies = calculate_letter_frequency [(c, 0) | c <- ['a'..'z']] words
   -- print letter_frequencies
 
