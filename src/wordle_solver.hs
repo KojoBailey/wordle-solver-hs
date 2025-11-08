@@ -1,4 +1,5 @@
 import System.IO
+import Data.List
 
 data WordleCorrectness = NotUsed | WrongPosition | CorrectPosition
   deriving (Eq, Show, Read, Ord)
@@ -45,10 +46,11 @@ convert_correctness_string :: String -> [WordleCorrectness]
 convert_correctness_string = map convert_correct_char
 
 
-wordle_solve :: [String] -> IO ()
-wordle_solve [ ] = print "No solution found..."
-wordle_solve [_] = print "Solution reached!"
-wordle_solve remaining_words = do
+wordle_solve :: [String] -> Integer -> IO ()
+wordle_solve [ ] _ = print "No solution found..."
+wordle_solve [_] _ = print "Solution reached!"
+wordle_solve  _ -1 = print "Out of turns!"
+wordle_solve remaining_words turns_left = do
   putStrLn "Enter word:"
   word_input <- getLine
 
@@ -57,7 +59,11 @@ wordle_solve remaining_words = do
 
   let possibilities = generate_possibilities (zip word_input $ convert_correctness_string correctness_input) remaining_words
   putStrLn $ "Number of possibilties: " ++ (show . length) possibilities
-  print possibilities
+  if length possibilities > 5 then do
+    putStrLn "(Words with duplicate letters are hidden.)"
+    print $ filter (\str -> length str /= length (nub str)) possibilities
+  else
+    print possibilities
 
   wordle_solve possibilities
 
