@@ -47,9 +47,9 @@ convert_correctness_string = map convert_correct_char
 
 
 wordle_solve :: [String] -> Integer -> IO ()
-wordle_solve [ ] _ = print "No solution found..."
-wordle_solve [_] _ = print "Solution reached!"
-wordle_solve  _ -1 = print "Out of turns!"
+wordle_solve [ ] _  = print "No solution found..."
+wordle_solve [_] _  = print "Solution reached!"
+wordle_solve _ (-1) = print "Out of turns!"
 wordle_solve remaining_words turns_left = do
   putStrLn "Enter word:"
   word_input <- getLine
@@ -58,14 +58,15 @@ wordle_solve remaining_words turns_left = do
   correctness_input <- getLine
 
   let possibilities = generate_possibilities (zip word_input $ convert_correctness_string correctness_input) remaining_words
+  let filtered_possibilities = filter (\str -> length str /= length (nub str)) possibilities
   putStrLn $ "Number of possibilties: " ++ (show . length) possibilities
-  if length possibilities > 5 then do
+  if length possibilities - length filtered_possibilities > 5 then do
     putStrLn "(Words with duplicate letters are hidden.)"
-    print $ filter (\str -> length str /= length (nub str)) possibilities
+    print filtered_possibilities
   else
     print possibilities
 
-  wordle_solve possibilities
+  wordle_solve possibilities (turns_left - 1)
 
 
 main :: IO ()
@@ -74,4 +75,4 @@ main = do
   wordle_stats <- readFile "wordle-stats.txt"
 
   let word_likelihoods = read wordle_stats :: [(String, Integer)]
-  wordle_solve $ map fst word_likelihoods
+  wordle_solve (map fst word_likelihoods) 5
