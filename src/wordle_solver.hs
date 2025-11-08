@@ -1,5 +1,6 @@
 import System.IO
 import Data.List
+import Data.Char
 
 data WordleCorrectness = NotUsed | WrongPosition | CorrectPosition
   deriving (Eq, Show, Read, Ord)
@@ -52,7 +53,8 @@ wordle_solve [_] _  = print "Solution reached!"
 wordle_solve _ (0) = print "Out of turns!"
 wordle_solve remaining_words turns_left = do
   putStrLn "Enter word:"
-  word_input <- getLine
+  word_input_buffer <- getLine
+  let word_input = map toLower word_input_buffer
 
   putStrLn "Enter correctness ('=' : correct, '/' : wrong position, 'X' : not used)"
   correctness_input <- getLine
