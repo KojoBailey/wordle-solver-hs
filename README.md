@@ -1,7 +1,7 @@
 # Wordle Solver - Haskell
 **This tool serves as a guide for solving [Wordle](https://www.nytimes.com/games/wordle/) puzzles!**
 
-As of this project's creation, I am learning the [functional programming](https://en.wikipedia.org/wiki/Functional_programming) language [Haskell](https://www.haskell.org/). Since I've been doing Wordles with friends on Discord for a while now, I got tired of doing them manually and figured I could use my laziness as an opportunity to challenge and improve my Haskell skills by creating a tool that does all the hard work for me!
+As of this project's creation, I am learning the [functional programming](https://en.wikipedia.org/wiki/Functional_programming) language [Haskell](https://www.haskell.org/) in university. Since I've been doing Wordles with friends on Discord for a while now, I got tired of doing them manually and figured I could use my laziness as an opportunity to challenge and improve my Haskell skills by creating a tool that does all the hard work for me!
 
 ## Usage
 This repo comes with 2 Haskell (`.hs`) scripts: [`wordle_solver`](https://github.com/KojoBailey/wordle-solver-hs/blob/main/wordle_solver.hs) and [`wordle_stats`](https://github.com/KojoBailey/wordle-solver-hs/blob/main/wordle_stats.hs). There are also two text files which contain data that both these scripts access.
