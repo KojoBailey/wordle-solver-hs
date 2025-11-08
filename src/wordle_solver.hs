@@ -8,6 +8,8 @@ data WordleCorrectness = NotUsed | WrongPosition | CorrectPosition
 type WordleString = [(Char, WordleCorrectness)]
 
 
+-- These match functions are only useful if the target word is known - useful for simulating.
+
 match2 :: (Eq b, Foldable t) => (b, b) -> t b -> WordleCorrectness
 match2 chars target
   | uncurry (==) chars      = CorrectPosition
