@@ -75,3 +75,8 @@ Solution reached in 3 turs!
 
 ## Known issues
 I still need to add detection for when you input a word with duplicate letters but the target does not have all of them - for example, you input "deeps" but the answer is "slept". Wordle will show this as "XX==/", but inputting this into the program will make it think that "e" is not in the word at all, even though it is but with only one instance. Until this is fixed, you'd need to change your input to "X/==/", which isn't perfect, but it keeps it working at least.
+
+## Contribution
+As I created this for the sake of learning, I appreciate any more experienced programmers to suggest changes that are in line with Haskell/FP ideals!
+
+That being said, I will not be accepting merge requests and whatnot, although you're free to fork this repo if you so wish.
