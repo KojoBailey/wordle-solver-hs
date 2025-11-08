@@ -1,6 +1,7 @@
 import System.IO
 import Data.Char
 
+
 calculate_letter_frequency_word :: [(Char, Integer)] -> String -> [(Char, Integer)]
 calculate_letter_frequency_word result [] = result
 calculate_letter_frequency_word previous (c:string) = calculate_letter_frequency_word foo string
@@ -11,11 +12,13 @@ calculate_letter_frequency result [] = result
 calculate_letter_frequency previous words =
   calculate_letter_frequency (calculate_letter_frequency_word previous (head words)) $ tail words
 
+
 char_to_int :: Char -> Int
 char_to_int c = ord c - ord 'a'
 
 calculate_likelihood :: [String] -> [(Char, Integer)] -> [(String, Integer)]
 calculate_likelihood ws freqs = map (\ w -> (w, sum [map snd freqs !! char_to_int c | c <- w])) ws
+
 
 main :: IO ()
 main = do
