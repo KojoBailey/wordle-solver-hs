@@ -50,8 +50,9 @@ convert_correctness_string = map convert_correct_char
 wordle_solve :: [String] -> Integer -> IO ()
 wordle_solve [ ] _  = putStrLn "No solution found..."
 wordle_solve [_] _  = putStrLn "Solution reached!"
-wordle_solve _ (0)  = putStrLn "Out of turns!"
-wordle_solve remaining_words turns_left = do
+wordle_solve _ (6)  = putStrLn "Out of turns!"
+wordle_solve remaining_words turn = do
+  putStrLn $ "~~ TURN " ++ show turn ++ " ~~"
   putStrLn "Enter word:"
   word_input_buffer <- getLine
   let word_input = map toLower word_input_buffer
@@ -68,7 +69,7 @@ wordle_solve remaining_words turns_left = do
   else
     print possibilities
 
-  wordle_solve possibilities (turns_left - 1)
+  wordle_solve possibilities (succ turn)
 
 
 main :: IO ()
@@ -77,4 +78,4 @@ main = do
   wordle_stats <- readFile "wordle-stats.txt"
 
   let word_likelihoods = read wordle_stats :: [(String, Integer)]
-  wordle_solve (map fst word_likelihoods) 5
+  wordle_solve (map fst word_likelihoods) 1
