@@ -1,5 +1,7 @@
 .vscode/
 
+build/
+
 *.yaml
 *.exe
 *.o
