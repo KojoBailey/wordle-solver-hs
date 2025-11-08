@@ -1,5 +1,7 @@
 import System.IO
 import Data.Char
+import Data.Ord
+import Data.List
 
 
 calculate_letter_frequency :: [(Char, Integer)] -> [Char] -> [(Char, Integer)]
@@ -32,7 +34,8 @@ main = do
   print positional_letter_frequencies
 
   putStrLn "Calculating likelihood score for each word..."
-  let result = calculate_likelihood words positional_letter_frequencies
+  let unsorted_result = calculate_likelihood words positional_letter_frequencies
+  let result = sortOn (Down . snd) unsorted_result
 
   let output_filename = "wordle-stats.txt"
   putStrLn $ "Writing data to " ++ output_filename ++ "..."

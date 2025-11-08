@@ -1,6 +1,4 @@
 import System.IO
-import Data.Ord
-import Data.List
 
 data WordleCorrectness = NotUsed | WrongPosition | CorrectPosition
   deriving (Eq, Show, Read, Ord)
@@ -70,7 +68,4 @@ main = do
   wordle_stats <- readFile "wordle-stats.txt"
 
   let word_likelihoods = read wordle_stats :: [(String, Integer)]
-  let sorted_words_likelihoods = sortOn (Down . snd) word_likelihoods
-  let sorted_words = map fst sorted_words_likelihoods
-
-  wordle_solve sorted_words
+  wordle_solve $ map fst word_likelihoods
