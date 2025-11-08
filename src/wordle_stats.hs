@@ -15,4 +15,8 @@ main = do
   putStrLn "Reading file of valid Worlde words..."
   contents <- readFile "valid-wordle-words.txt"
   putStrLn "Calculating letter frequencies..."
-  print $ calculate_letter_frequency (map (\ c -> (c, 0)) ['a'..'z']) (lines contents)
+  let result = show $ calculate_letter_frequency (map (\ c -> (c, 0)) ['a'..'z']) (lines contents)
+  putStrLn result
+  putStrLn "Writing data to \"wordle-letter-frequencies.txt\"..."
+  writeFile "wordle-letter-frequencies.txt" result
+  putStrLn "Complete!"
