@@ -71,9 +71,11 @@ wordle_solve remaining_words turn = do
     let possibilities = generate_possibilities (zip word_input $ convert_correctness_string correctness_input) remaining_words
     let filtered_possibilities = filter (\str -> length str == length (nub str)) possibilities
     putStrLn $ "Number of possibilties: " ++ (show . length) possibilities
-    if length filtered_possibilities > 5 then do
+    let number_of_filtered_possibilities = length filtered_possibilities
+    if number_of_filtered_possibilities > 5 then do
+      putStrLn "Showing top 10 words."
       putStrLn "(Words with duplicate letters are hidden.)"
-      print filtered_possibilities
+      if number_of_filtered_possibilities > 10 then print $ take 10 filtered_possibilities else print filtered_possibilities
     else
       print possibilities
 
