@@ -1,6 +1,7 @@
-import System.IO
-import Data.List
-import Data.Char
+import System.IO ()
+import Data.List ( nub )
+import Data.Char ( toLower )
+import Control.Monad ( void )
 
 data WordleCorrectness = NotUsed | WrongPosition | CorrectPosition
   deriving (Eq, Show, Read, Ord)
@@ -49,43 +50,45 @@ convert_correctness_string :: String -> [WordleCorrectness]
 convert_correctness_string = map convert_correct_char
 
 print_solution_reached :: Integer -> IO ()
-print_solution_reached turn = do putStrLn []; putStrLn $ "Solution reached in " ++ show turn ++ " turns!"
+print_solution_reached turn =
+  putStrLn "" >>
+  putStrLn ("Solution reached in " ++ show turn ++ " turns!")
 
 wordle_solve :: [String] -> Integer -> IO ()
 wordle_solve [ ] _    = putStrLn "No solution found..."
 wordle_solve _ (6)    = putStrLn "Out of turns!"
 wordle_solve [_] turn = print_solution_reached turn
-wordle_solve remaining_words turn = do
-  putStrLn $ "~~ TURN " ++ show turn ++ " ~~"
-  putStrLn "Enter word:"
-  word_input_buffer <- getLine
-  let word_input = map toLower word_input_buffer
+wordle_solve remaining_words turn =
+  putStrLn ("~~ TURN " ++ show turn ++ " ~~") >>
+  putStrLn "Enter word:" >>
+  getLine >>= \word_input_buffer ->
+  let word_input = map toLower word_input_buffer in
 
-  putStrLn "Enter correctness ('=' : correct, '/' : wrong position, 'X' : not used)"
-  correctness_input <- getLine
+  putStrLn "Enter correctness ('=' : correct, '/' : wrong position, 'X' : not used)" >>
+  getLine >>= \correctness_input ->
 
-  if correctness_input == "=====" then do
-    print_solution_reached turn
-    return ()
-  else do
-    let possibilities = generate_possibilities (zip word_input $ convert_correctness_string correctness_input) remaining_words
-    let filtered_possibilities = filter (\str -> length str == length (nub str)) possibilities
-    putStrLn $ "Number of possibilties: " ++ (show . length) possibilities
-    let number_of_filtered_possibilities = length filtered_possibilities
-    if number_of_filtered_possibilities > 5 then do
-      putStrLn "Showing top 10 words."
-      putStrLn "(Words with duplicate letters are hidden.)"
-      if number_of_filtered_possibilities > 10 then print $ take 10 filtered_possibilities else print filtered_possibilities
+  if correctness_input == "=====" then
+    void $ print_solution_reached turn
+  else
+    let
+      possibilities = generate_possibilities (zip word_input $ convert_correctness_string correctness_input) remaining_words
+      filtered_possibilities = filter (\str -> length str == length (nub str)) possibilities
+      number_of_filtered_possibilities = length filtered_possibilities
+    in putStrLn ("Number of possibilties: " ++ (show . length) possibilities) >>
+    if number_of_filtered_possibilities > 5 then
+      putStrLn "Showing top 10 words." >>
+      putStrLn "(Words with duplicate letters are hidden.)" >>
+      if number_of_filtered_possibilities > 10
+        then print $ take 10 filtered_possibilities
+        else print filtered_possibilities
     else
-      print possibilities
-
-    putStrLn []
-    wordle_solve possibilities (succ turn)
+      print possibilities >>
+      putStrLn "" >>
+      wordle_solve possibilities (succ turn)
 
 
 main :: IO ()
-main = do
-  wordle_stats <- readFile "wordle-stats.txt"
-
-  let word_likelihoods = read wordle_stats :: [(String, Integer)]
+main =
+  readFile "wordle-stats.txt" >>= \wordle_stats ->
+  let word_likelihoods = read wordle_stats :: [(String, Integer)] in
   wordle_solve (map fst word_likelihoods) 1
